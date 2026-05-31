@@ -5,11 +5,6 @@ $portal = new CaptivePortal();
 $platform = $portal->detectPlatform();
 $checkUrls = json_encode($portal->getSuccessCheckUrls($platform['platform']), JSON_UNESCAPED_SLASHES);
 $alreadyAuthorized = $portal->isAuthorized();
-
-if ($alreadyAuthorized) {
-    header('Location: /success');
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -145,11 +140,15 @@ if ($alreadyAuthorized) {
                 🌐 Visit https://q5.qa
             </a>
 
-            <button type="button" id="connectBtn" class="close-btn">
+            <button type="button" id="connectBtn" class="close-btn"<?= $alreadyAuthorized ? ' style="display:none"' : '' ?>>
                 Close &amp; Connect
             </button>
 
+            <?php if ($alreadyAuthorized): ?>
+            <p class="status ok">Connected successfully. Enjoy Free Internet</p>
+            <?php else: ?>
             <div id="status" class="status" role="status" aria-live="polite"></div>
+            <?php endif; ?>
             <p class="footer">Secure network authentication</p>
         </div>
     </div>
@@ -160,6 +159,11 @@ if ($alreadyAuthorized) {
             const checkUrls = <?= $checkUrls ?>;
             const btn = document.getElementById('connectBtn');
             const status = document.getElementById('status');
+            const alreadyAuthorized = <?= $alreadyAuthorized ? 'true' : 'false' ?>;
+
+            if (alreadyAuthorized || !btn) {
+                return;
+            }
 
             function setStatus(text, type) {
                 status.textContent = text;

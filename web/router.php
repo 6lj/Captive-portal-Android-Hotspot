@@ -13,14 +13,23 @@ if ($uri === '/authorize' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 if (str_starts_with($uri, '/probe/')) {
     $probePath = substr($uri, strlen('/probe'));
     $_SERVER['REQUEST_URI'] = $probePath === '' ? '/generate_204' : $probePath;
-    if ($portal->handleProbe() === null) {
+    $probeResult = $portal->handleProbe();
+    if ($probeResult === null) {
         $_SERVER['REQUEST_URI'] = '/generate_204';
-        $portal->handleProbe();
+        $probeResult = $portal->handleProbe();
+    }
+    if ($probeResult === false) {
+        require __DIR__ . '/index.php';
     }
     exit;
 }
 
-if ($portal->handleProbe() !== null) {
+$probeResult = $portal->handleProbe();
+if ($probeResult === true) {
+    exit;
+}
+if ($probeResult === false) {
+    require __DIR__ . '/index.php';
     exit;
 }
 

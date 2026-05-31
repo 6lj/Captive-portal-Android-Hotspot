@@ -107,7 +107,8 @@ class CaptivePortal
     public function isAuthorized(): bool
     {
         $ip = $this->getClientIp();
-        $authorized = file($this->authFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+        $lines = file($this->authFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+        $authorized = array_map(static fn(string $line): string => trim($line), $lines);
 
         return in_array($ip, $authorized, true);
     }
@@ -135,6 +136,10 @@ class CaptivePortal
         $host = strtolower($_SERVER['HTTP_HOST'] ?? '');
         $host = preg_replace('/:\d+$/', '', $host);
 
+        if ($this->isGatewayHost($host) && !$this->isProbePath($uri)) {
+            return null;
+        }
+
         $isProbeHost = $this->isProbeHost($host);
         $probeKey = $this->matchProbePath($uri);
 
@@ -147,8 +152,23 @@ class CaptivePortal
             return true;
         }
 
-        $this->sendCaptiveRedirect();
-        return true;
+        return false;
+    }
+
+    private function isGatewayHost(string $host): bool
+    {
+        if ($host === '') {
+            return false;
+        }
+
+        $gatewayIp = $this->getGatewayIp();
+
+        return $host === $gatewayIp || $host === 'localhost' || $host === '127.0.0.1';
+    }
+
+    private function isProbePath(string $uri): bool
+    {
+        return $this->matchProbePath($uri) !== null;
     }
 
     private function isProbeHost(string $host): bool
@@ -176,10 +196,6 @@ class CaptivePortal
             }
         }
 
-        if ($path === '' || $path === 'index.html') {
-            return 'hotspot-detect.html';
-        }
-
         return null;
     }
 
@@ -201,16 +217,6 @@ class CaptivePortal
             header('Content-Length: ' . strlen($config['body']));
             echo $config['body'];
         }
-    }
-
-    private function sendCaptiveRedirect(): void
-    {
-        $portalUrl = $this->getPortalUrl();
-
-        http_response_code(302);
-        header('Location: ' . $portalUrl);
-        header('Cache-Control: no-cache, no-store, must-revalidate');
-        exit;
     }
 
     public function getGatewayIp(): string

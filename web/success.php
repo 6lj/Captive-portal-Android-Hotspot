@@ -2,21 +2,18 @@
 require_once __DIR__ . '/lib/portal.php';
 
 $portal = new CaptivePortal();
-
-if (!$portal->isAuthorized()) {
-    header('Location: /');
-    exit;
-}
-
 $platform = $portal->detectPlatform();
+$authorized = $portal->isAuthorized();
 ?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connected</title>
+    <title><?= $authorized ? 'Connected' : 'Not connected' ?></title>
+    <?php if ($authorized): ?>
     <meta http-equiv="refresh" content="2;url=/probe/generate_204">
+    <?php endif; ?>
     <style>
         body {
             margin: 0;
@@ -46,11 +43,18 @@ $platform = $portal->detectPlatform();
 </head>
 <body>
     <div class="box">
+        <?php if ($authorized): ?>
         <div class="icon">✅</div>
         <h1>Connected Successfully</h1>
         <p>You are now connected to the network.<br>Enjoy Free Internet.</p>
+        <?php else: ?>
+        <div class="icon">📶</div>
+        <h1>Not connected yet</h1>
+        <p><a href="/">Go back and tap Close &amp; Connect</a></p>
+        <?php endif; ?>
     </div>
 
+    <?php if ($authorized): ?>
     <script>
         (function () {
             const platform = <?= json_encode($platform['platform']) ?>;
@@ -73,5 +77,6 @@ $platform = $portal->detectPlatform();
             }, 2500);
         })();
     </script>
+    <?php endif; ?>
 </body>
 </html>
