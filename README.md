@@ -47,7 +47,7 @@ Start the web server (must use `router.php`):
 cd ~/Captive-portal-Android-Hotspot/web
 php -S 0.0.0.0:8080 router.php
 ```
-
+![Screenshot 1](https://i.ibb.co/PG0834NF/Screenshot-20260531-063900.png)
 If you want to close it:
 
 ```bash
