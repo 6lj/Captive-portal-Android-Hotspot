@@ -48,7 +48,7 @@ cd ~/Captive-portal-Android-Hotspot/web
 php -S 0.0.0.0:8080 router.php
 ```
 
-When finished, remove iptables rules:
+If you want to close it:
 
 ```bash
 tsu
