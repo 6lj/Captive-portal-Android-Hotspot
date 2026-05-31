@@ -4,11 +4,7 @@ Captive portal for Android Hotspot, supports Android, iOS, macOS, Windows, and F
 
 
 ### Requirements
-
-* Android phone with hotspot
-* Termux
-* Root — required for redirecting HTTP traffic with iptables
-* PHP
+Android (rooted) And Termux (you found in google play)
 
 ### Setup (Termux)
 in Termux 
