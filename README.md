@@ -44,7 +44,7 @@ exit
 Start the web server (must use `router.php`):
 
 ```bash
-cd ~/Captive-portal-Android-Hotspot//web
+cd ~/Captive-portal-Android-Hotspot/web
 php -S 0.0.0.0:8080 router.php
 ```
 
