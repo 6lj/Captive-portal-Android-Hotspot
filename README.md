@@ -1,6 +1,6 @@
 
 
-Captive portal for Android Hotspot — supports Android, iOS, macOS, Windows, and Firefox.
+Captive portal for Android Hotspot, supports Android, iOS, macOS, Windows, and Firefox.
 
 
 ### Requirements
@@ -11,7 +11,7 @@ Captive portal for Android Hotspot — supports Android, iOS, macOS, Windows, an
 * PHP
 
 ### Setup
-
+in Termux
 Install packages:
 
 ```bash
