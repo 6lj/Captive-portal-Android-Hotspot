@@ -10,12 +10,19 @@ Captive portal for Android Hotspot, supports Android, iOS, macOS, Windows, and F
 * Root — required for redirecting HTTP traffic with iptables
 * PHP
 
-### Setup
-in Termux
+### Setup (Termux)
+in Termux 
 Install packages:
 
 ```bash
 pkg install php tsu
+```
+
+Copy the project to Termux home — NOT `/sdcard/Download`:
+
+```bash
+cp -r /sdcard/Download/android-portals-master ~/android-portals
+cd ~/android-portals
 ```
 
 Turn on hotspot:
@@ -23,31 +30,46 @@ Turn on hotspot:
 * Set security to **None** (open network)
 * Rename hotspot as desired
 
-Apply redirect rules as root (IP is detected automatically from the hotspot interface):
+Apply redirect rules as root:
 
 ```bash
-cd Captive-portal-Android-Hotspot
-sudo ./redirect.sh
+tsu
+sh redirect.sh
+exit
 ```
 
-If auto-detection fails on your device, set the IP manually:
+If auto-detection fails, set the IP manually:
 
 ```bash
-GATEWAY_IP=10.42.0.1 sudo ./redirect.sh
+tsu
+GATEWAY_IP=10.42.0.1 sh redirect.sh
+exit
 ```
 
 Start the web server (must use `router.php`):
 
 ```bash
-cd web
+cd ~/Captive-portal-Android-Hotspot//web
 php -S 0.0.0.0:8080 router.php
 ```
 
 When finished, remove iptables rules:
 
 ```bash
-sudo ./cleanup.sh
+tsu
+sh cleanup.sh
+exit
 ```
+
+### Termux: Permission denied fix
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `bash: ./redirect.sh: Permission denied` | No execute bit or noexec mount | Use `sh redirect.sh` |
+| `env: exec ./redirect.sh: Permission denied` | Cannot exec from sdcard | Move project to `~/` and use `sh redirect.sh` |
+| `sudo: command not found` | Termux has no sudo | Use `tsu` then `sh redirect.sh` |
+
+**Do not use** `./redirect.sh` or `sudo ./redirect.sh` in Termux.
 
 ### How it works
 
@@ -71,12 +93,8 @@ sudo ./cleanup.sh
 
 ### Notes
 
-* Tested on Sony Xperia XZ1 Compact LineageOS 17.1 with Magisk
-* Hotspot may not show "Tap here to sign in to network" without internet; enabling mobile data (even without a data plan) can help trigger detection
+* Hotspot may not show "Tap here to sign in to network" without internet; enabling mobile data can help trigger detection
 * Authorized client IPs are stored in `web/data/authorized_ips.txt`
 * Restart the PHP server to clear all authorized clients
-* Clean up redirect.sh rules automatically on exit
-* HTTPS (port 443) interception for stricter clients
-
 
 ### by Abyah or ENDUP
