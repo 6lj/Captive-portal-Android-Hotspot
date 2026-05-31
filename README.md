@@ -18,12 +18,7 @@ Install packages:
 pkg install php tsu
 ```
 
-Copy the project to Termux home — NOT `/sdcard/Download`:
-
-```bash
-cp -r /sdcard/Download/android-portals-master ~/android-portals
-cd ~/android-portals
-```
+Copy the project to Termux home — NOT `/sdcard/Download`
 
 Turn on hotspot:
 
